@@ -11,6 +11,9 @@
     <!-- Resource Hints for Performance -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <title>{% block title %}VoteWise{% endblock %}</title>
 
@@ -29,7 +32,7 @@
 
     {% block css %}{% endblock %}
 </head>
-<body class="min-h-screen bg-base-200 text-base-content flex flex-col font-sans">
+<body class="min-h-screen bg-base-200 text-base-content flex flex-col font-sans" style="font-family: 'Inter', sans-serif;">
     {% include 'includes/header.html' %}
 
     <main class="flex-grow">

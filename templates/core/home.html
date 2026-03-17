@@ -5,162 +5,243 @@
 
 {% block content %}
 <!-- Hero Section -->
-<div class="hero min-h-screen bg-base-200">
-    <div class="hero-content text-center">
-        <div class="max-w-2xl">
-            <div class="badge badge-primary badge-outline mb-4 p-4 text-sm font-semibold gap-2">
-                <i class="fas fa-shield-check"></i> Secure & Transparent Voting
+<section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-base-200">
+    <!-- Decorative Background Shapes -->
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px]"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Hero Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 mb-8 animate-fade-in-up">
+                <i class="fas fa-shield-check"></i>
+                <span class="text-sm font-bold tracking-wide uppercase">Secure & Transparent Voting</span>
             </div>
-            <h1 class="text-5xl font-bold mb-6">
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] animate-fade-in-up" style="animation-delay: 100ms;">
                 Your Vote<br>
-                <span class="text-primary">Shapes Our Future</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Shapes Our Future</span>
             </h1>
-            <p class="py-6 text-lg">
+            
+            <p class="text-lg md:text-xl text-base-content/70 mb-10 leading-relaxed max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 200ms;">
                 Participate in student democracy with VoteWise—a secure, accessible, and transparent digital voting platform designed for the modern student.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{% url 'login' %}" class="btn btn-primary gap-2">
-                    <i class="fas fa-vote-yea"></i> Cast Your Vote <i class="fas fa-arrow-right"></i>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up" style="animation-delay: 300ms;">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-8 rounded-xl shadow-xl shadow-primary/20 gap-3 group">
+                    <i class="fas fa-vote-yea text-xl transition-transform group-hover:rotate-12"></i>
+                    <span>Cast Your Vote</span>
+                    <i class="fas fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
                 </a>
-                <a href="#" class="btn btn-outline gap-2">
-                    <i class="fas fa-chart-bar"></i> View Results
+                <a href="#" class="btn btn-ghost btn-lg px-8 rounded-xl gap-2">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>View Results</span>
                 </a>
             </div>
-
-            <div class="stats stats-vertical lg:stats-horizontal shadow mt-10 w-full bg-base-100">
-                <div class="stat place-items-center">
-                    <div class="stat-figure text-primary">
-                        <i class="fas fa-users text-3xl"></i>
+            
+            <!-- Hero Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 400ms;">
+                <div class="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-200 flex items-center gap-4 transition-transform hover:scale-105">
+                    <div class="bg-primary/10 p-3 rounded-xl text-primary">
+                        <i class="fas fa-users text-2xl"></i>
                     </div>
-                    <div class="stat-title">Registered Voters</div>
-                    <div class="stat-value">1000+</div>
+                    <div class="text-left">
+                        <div class="text-2xl font-bold">1000+</div>
+                        <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider">Registered Voters</div>
+                    </div>
                 </div>
-
-                <div class="stat place-items-center">
-                    <div class="stat-figure text-success">
-                        <i class="fas fa-check-circle text-3xl"></i>
+                <div class="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-200 flex items-center gap-4 transition-transform hover:scale-105">
+                    <div class="bg-success/10 p-3 rounded-xl text-success">
+                        <i class="fas fa-check-circle text-2xl"></i>
                     </div>
-                    <div class="stat-title">Secure</div>
-                    <div class="stat-value">100%</div>
+                    <div class="text-left">
+                        <div class="text-2xl font-bold">100%</div>
+                        <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider">Secure</div>
+                    </div>
                 </div>
-
-                <div class="stat place-items-center">
-                    <div class="stat-figure text-secondary">
-                        <i class="fas fa-clock text-3xl"></i>
+                <div class="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-200 flex items-center gap-4 transition-transform hover:scale-105">
+                    <div class="bg-secondary/10 p-3 rounded-xl text-secondary">
+                        <i class="fas fa-clock text-2xl"></i>
                     </div>
-                    <div class="stat-title">Access</div>
-                    <div class="stat-value">24/7</div>
+                    <div class="text-left">
+                        <div class="text-2xl font-bold">24/7</div>
+                        <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider">Access</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Features Section -->
-<section class="py-16 bg-base-100">
+<section class="py-24 bg-base-100">
     <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold mb-2">Why Choose VoteWise?</h2>
-            <p class="text-base-content/70">A modern voting platform built with security, accessibility, and transparency at its core</p>
+        <div class="max-w-3xl mx-auto text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose VoteWise?</h2>
+            <div class="w-20 h-1.5 bg-primary mx-auto rounded-full mb-6"></div>
+            <p class="text-base-content/60 text-lg">
+                A modern voting platform built with security, accessibility, and transparency at its core
+            </p>
         </div>
-
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Feature 1 -->
-            <div class="card bg-base-200 shadow-xl">
-                <div class="card-body items-center text-center">
-                    <div class="text-4xl text-primary mb-4"><i class="fas fa-mobile-alt"></i></div>
-                    <h3 class="card-title">Vote Anywhere</h3>
-                    <p>Cast your ballot from any device—phone, tablet, or computer. No apps or downloads required.</p>
+            <!-- Feature Card 1 -->
+            <div class="group p-8 rounded-3xl bg-base-200 border border-transparent hover:border-primary/20 hover:bg-base-100 hover:shadow-2xl transition-all duration-300">
+                <div class="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-mobile-alt"></i>
                 </div>
+                <h3 class="text-xl font-bold mb-4">Vote Anywhere</h3>
+                <p class="text-base-content/60 leading-relaxed">
+                    Cast your ballot from any device—phone, tablet, or computer. No apps or downloads required.
+                </p>
             </div>
-            <!-- Feature 2 -->
-            <div class="card bg-base-200 shadow-xl">
-                <div class="card-body items-center text-center">
-                    <div class="text-4xl text-secondary mb-4"><i class="fas fa-bolt"></i></div>
-                    <h3 class="card-title">Real-Time Results</h3>
-                    <p>Watch results update live with our transparent, real-time counting dashboard.</p>
+            
+            <!-- Feature Card 2 -->
+            <div class="group p-8 rounded-3xl bg-base-200 border border-transparent hover:border-secondary/20 hover:bg-base-100 hover:shadow-2xl transition-all duration-300">
+                <div class="w-16 h-16 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-bolt"></i>
                 </div>
+                <h3 class="text-xl font-bold mb-4">Real-Time Results</h3>
+                <p class="text-base-content/60 leading-relaxed">
+                    Watch results update live with our transparent, real-time counting dashboard.
+                </p>
             </div>
-            <!-- Feature 3 -->
-            <div class="card bg-base-200 shadow-xl">
-                <div class="card-body items-center text-center">
-                    <div class="text-4xl text-success mb-4"><i class="fas fa-shield-alt"></i></div>
-                    <h3 class="card-title">Secure & Private</h3>
-                    <p>Your vote is encrypted and anonymous. Only verified students can participate.</p>
+            
+            <!-- Feature Card 3 -->
+            <div class="group p-8 rounded-3xl bg-base-200 border border-transparent hover:border-success/20 hover:bg-base-100 hover:shadow-2xl transition-all duration-300">
+                <div class="w-16 h-16 rounded-2xl bg-success/10 text-success flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
+                <h3 class="text-xl font-bold mb-4">Secure & Private</h3>
+                <p class="text-base-content/60 leading-relaxed">
+                    Your vote is encrypted and anonymous. Only verified students can participate.
+                </p>
             </div>
-            <!-- Feature 4 -->
-            <div class="card bg-base-200 shadow-xl">
-                <div class="card-body items-center text-center">
-                    <div class="text-4xl text-info mb-4"><i class="fas fa-chart-line"></i></div>
-                    <h3 class="card-title">Transparent Process</h3>
-                    <p>Full audit trails and verifiable results ensure trust in the democratic process.</p>
+            
+            <!-- Feature Card 4 -->
+            <div class="group p-8 rounded-3xl bg-base-200 border border-transparent hover:border-info/20 hover:bg-base-100 hover:shadow-2xl transition-all duration-300">
+                <div class="w-16 h-16 rounded-2xl bg-info/10 text-info flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-chart-line"></i>
                 </div>
+                <h3 class="text-xl font-bold mb-4">Transparent Process</h3>
+                <p class="text-base-content/60 leading-relaxed">
+                    Full audit trails and verifiable results ensure trust in the democratic process.
+                </p>
             </div>
-            <!-- Feature 5 -->
-            <div class="card bg-base-200 shadow-xl">
-                <div class="card-body items-center text-center">
-                    <div class="text-4xl text-warning mb-4"><i class="fas fa-universal-access"></i></div>
-                    <h3 class="card-title">Fully Accessible</h3>
-                    <p>Designed for all students with support for screen readers and assistive technologies.</p>
+            
+            <!-- Feature Card 5 -->
+            <div class="group p-8 rounded-3xl bg-base-200 border border-transparent hover:border-warning/20 hover:bg-base-100 hover:shadow-2xl transition-all duration-300">
+                <div class="w-16 h-16 rounded-2xl bg-warning/10 text-warning flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-universal-access"></i>
                 </div>
+                <h3 class="text-xl font-bold mb-4">Fully Accessible</h3>
+                <p class="text-base-content/60 leading-relaxed">
+                    Designed for all students with support for screen readers and assistive technologies.
+                </p>
             </div>
-            <!-- Feature 6 -->
-            <div class="card bg-base-200 shadow-xl">
-                <div class="card-body items-center text-center">
-                    <div class="text-4xl text-error mb-4"><i class="fas fa-robot"></i></div>
-                    <h3 class="card-title">AI Assistant</h3>
-                    <p>Get unbiased information about candidates and their platforms from our AI chatbot.</p>
+            
+            <!-- Feature Card 6 -->
+            <div class="group p-8 rounded-3xl bg-base-200 border border-transparent hover:border-error/20 hover:bg-base-100 hover:shadow-2xl transition-all duration-300">
+                <div class="w-16 h-16 rounded-2xl bg-error/10 text-error flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-robot"></i>
                 </div>
+                <h3 class="text-xl font-bold mb-4">AI Assistant</h3>
+                <p class="text-base-content/60 leading-relaxed">
+                    Get unbiased information about candidates and their platforms from our AI chatbot.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- How It Works Section -->
-<section class="py-16 bg-base-200">
-    <div class="container mx-auto px-4 text-center">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold mb-2">How It Works</h2>
-            <p class="text-base-content/70">Voting is simple and secure in just three easy steps</p>
+<section class="py-24 bg-base-200">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+            <p class="text-base-content/60 text-lg">
+                Voting is simple and secure in just three easy steps
+            </p>
         </div>
+        
+        <div class="flex flex-col lg:flex-row items-start justify-center gap-12 max-w-6xl mx-auto">
+            <!-- Step 1 -->
+            <div class="flex-1 text-center group">
+                <div class="relative inline-block mb-6">
+                    <div class="w-20 h-20 rounded-full bg-primary text-primary-content flex items-center justify-center text-3xl font-bold shadow-lg shadow-primary/30 relative z-10">1</div>
+                    <div class="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-20"></div>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Login</h3>
+                <p class="text-base-content/60">Sign in with your student credentials to verify your identity</p>
+            </div>
 
-        <ul class="steps steps-vertical lg:steps-horizontal w-full max-w-4xl mx-auto">
-            <li class="step step-primary">
-                <div class="mt-4">
-                    <h3 class="font-bold text-lg">Login</h3>
-                    <p class="text-sm">Sign in with your student credentials to verify your identity</p>
-                </div>
-            </li>
-            <li class="step step-primary">
-                <div class="mt-4">
-                    <h3 class="font-bold text-lg">Vote</h3>
-                    <p class="text-sm">Select your preferred candidates for each position</p>
-                </div>
-            </li>
-            <li class="step step-primary">
-                <div class="mt-4">
-                    <h3 class="font-bold text-lg">Confirm</h3>
-                    <p class="text-sm">Review and submit your ballot securely</p>
-                </div>
-            </li>
-        </ul>
+            <!-- Arrow (Desktop) -->
+            <div class="hidden lg:flex pt-8 text-primary/30 text-3xl">
+                <i class="fas fa-long-arrow-alt-right"></i>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex-1 text-center">
+                <div class="w-20 h-20 rounded-full bg-primary text-primary-content flex items-center justify-center text-3xl font-bold shadow-lg shadow-primary/30 mx-auto mb-6">2</div>
+                <h3 class="text-2xl font-bold mb-3">Vote</h3>
+                <p class="text-base-content/60">Select your preferred candidates for each position</p>
+            </div>
+
+            <!-- Arrow (Desktop) -->
+            <div class="hidden lg:flex pt-8 text-primary/30 text-3xl">
+                <i class="fas fa-long-arrow-alt-right"></i>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex-1 text-center">
+                <div class="w-20 h-20 rounded-full bg-primary text-primary-content flex items-center justify-center text-3xl font-bold shadow-lg shadow-primary/30 mx-auto mb-6">3</div>
+                <h3 class="text-2xl font-bold mb-3">Confirm</h3>
+                <p class="text-base-content/60">Review and submit your ballot securely</p>
+            </div>
+        </div>
     </div>
 </section>
 
 <!-- CTA Section -->
-<section class="py-20 bg-primary text-primary-content">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-4xl font-bold mb-4">Ready to Make Your Voice Heard?</h2>
-        <p class="text-xl mb-8 opacity-90">Join thousands of students participating in democratic elections through VoteWise</p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{% url 'login' %}" class="btn btn-neutral btn-lg gap-2">
-                <i class="fas fa-vote-yea"></i> Start Voting Now
+<section class="py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-primary z-0"></div>
+    <!-- Patterns -->
+    <div class="absolute inset-0 z-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+    
+    <div class="container mx-auto px-4 relative z-10 text-center text-primary-content">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Make Your Voice Heard?</h2>
+        <p class="text-xl mb-12 opacity-90 max-w-2xl mx-auto">
+            Join thousands of students participating in democratic elections through VoteWise
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <a href="{% url 'login' %}" class="btn btn-neutral btn-lg px-10 rounded-xl shadow-2xl gap-3">
+                <i class="fas fa-vote-yea"></i>
+                <span>Start Voting Now</span>
             </a>
-            <a href="#" class="btn btn-outline btn-lg text-primary-content hover:bg-primary-content hover:text-primary gap-2">
-                <i class="fas fa-calendar-alt"></i> View Election Timeline
+            <a href="#" class="btn btn-outline btn-lg px-10 rounded-xl bg-white/5 border-white/20 text-white hover:bg-white/10 gap-3">
+                <i class="fas fa-calendar-alt"></i>
+                <span>View Timeline</span>
             </a>
         </div>
     </div>
 </section>
+
+<style>
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in-up {
+        animation: fade-in-up 0.6s ease-out forwards;
+        opacity: 0;
+    }
+</style>
 {% endblock %}
