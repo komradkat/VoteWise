@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - VoteWise{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero min-h-screen bg-base-200">
+    <div class="hero-content text-center">
+        <div class="max-w-2xl">
+            <div class="badge badge-primary badge-outline mb-4 p-4 text-sm font-semibold gap-2">
+                <i class="fas fa-shield-check"></i> Secure & Transparent Voting
+            </div>
+            <h1 class="text-5xl font-bold mb-6">
+                Your Vote<br>
+                <span class="text-primary">Shapes Our Future</span>
+            </h1>
+            <p class="py-6 text-lg">
+                Participate in student democracy with VoteWise—a secure, accessible, and transparent digital voting platform designed for the modern student.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'login' %}" class="btn btn-primary gap-2">
+                    <i class="fas fa-vote-yea"></i> Cast Your Vote <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#" class="btn btn-outline gap-2">
+                    <i class="fas fa-chart-bar"></i> View Results
+                </a>
+            </div>
+
+            <div class="stats stats-vertical lg:stats-horizontal shadow mt-10 w-full bg-base-100">
+                <div class="stat place-items-center">
+                    <div class="stat-figure text-primary">
+                        <i class="fas fa-users text-3xl"></i>
+                    </div>
+                    <div class="stat-title">Registered Voters</div>
+                    <div class="stat-value">1000+</div>
+                </div>
+
+                <div class="stat place-items-center">
+                    <div class="stat-figure text-success">
+                        <i class="fas fa-check-circle text-3xl"></i>
+                    </div>
+                    <div class="stat-title">Secure</div>
+                    <div class="stat-value">100%</div>
+                </div>
+
+                <div class="stat place-items-center">
+                    <div class="stat-figure text-secondary">
+                        <i class="fas fa-clock text-3xl"></i>
+                    </div>
+                    <div class="stat-title">Access</div>
+                    <div class="stat-value">24/7</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="py-16 bg-base-100">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-2">Why Choose VoteWise?</h2>
+            <p class="text-base-content/70">A modern voting platform built with security, accessibility, and transparency at its core</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl text-primary mb-4"><i class="fas fa-mobile-alt"></i></div>
+                    <h3 class="card-title">Vote Anywhere</h3>
+                    <p>Cast your ballot from any device—phone, tablet, or computer. No apps or downloads required.</p>
+                </div>
+            </div>
+            <!-- Feature 2 -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl text-secondary mb-4"><i class="fas fa-bolt"></i></div>
+                    <h3 class="card-title">Real-Time Results</h3>
+                    <p>Watch results update live with our transparent, real-time counting dashboard.</p>
+                </div>
+            </div>
+            <!-- Feature 3 -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl text-success mb-4"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="card-title">Secure & Private</h3>
+                    <p>Your vote is encrypted and anonymous. Only verified students can participate.</p>
+                </div>
+            </div>
+            <!-- Feature 4 -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl text-info mb-4"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="card-title">Transparent Process</h3>
+                    <p>Full audit trails and verifiable results ensure trust in the democratic process.</p>
+                </div>
+            </div>
+            <!-- Feature 5 -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl text-warning mb-4"><i class="fas fa-universal-access"></i></div>
+                    <h3 class="card-title">Fully Accessible</h3>
+                    <p>Designed for all students with support for screen readers and assistive technologies.</p>
+                </div>
+            </div>
+            <!-- Feature 6 -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl text-error mb-4"><i class="fas fa-robot"></i></div>
+                    <h3 class="card-title">AI Assistant</h3>
+                    <p>Get unbiased information about candidates and their platforms from our AI chatbot.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-16 bg-base-200">
+    <div class="container mx-auto px-4 text-center">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-2">How It Works</h2>
+            <p class="text-base-content/70">Voting is simple and secure in just three easy steps</p>
+        </div>
+
+        <ul class="steps steps-vertical lg:steps-horizontal w-full max-w-4xl mx-auto">
+            <li class="step step-primary">
+                <div class="mt-4">
+                    <h3 class="font-bold text-lg">Login</h3>
+                    <p class="text-sm">Sign in with your student credentials to verify your identity</p>
+                </div>
+            </li>
+            <li class="step step-primary">
+                <div class="mt-4">
+                    <h3 class="font-bold text-lg">Vote</h3>
+                    <p class="text-sm">Select your preferred candidates for each position</p>
+                </div>
+            </li>
+            <li class="step step-primary">
+                <div class="mt-4">
+                    <h3 class="font-bold text-lg">Confirm</h3>
+                    <p class="text-sm">Review and submit your ballot securely</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-primary text-primary-content">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-4">Ready to Make Your Voice Heard?</h2>
+        <p class="text-xl mb-8 opacity-90">Join thousands of students participating in democratic elections through VoteWise</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'login' %}" class="btn btn-neutral btn-lg gap-2">
+                <i class="fas fa-vote-yea"></i> Start Voting Now
+            </a>
+            <a href="#" class="btn btn-outline btn-lg text-primary-content hover:bg-primary-content hover:text-primary gap-2">
+                <i class="fas fa-calendar-alt"></i> View Election Timeline
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,60 @@
+<header class="navbar bg-base-100 shadow-md sticky top-0 z-50">
+    <!-- Navbar Start (Logo) -->
+    <div class="navbar-start">
+        <div class="dropdown" x-data="{ open: false }" @click.away="open = false">
+            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden" @click="open = !open">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52" x-show="open" style="display: none;">
+                <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+                <!-- Dummy placeholders for undefined URLs -->
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Results</a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Timeline</a></li>
+                <li><a href="#"><i class="fas fa-users"></i> Candidates</a></li>
+                <li><a href="#"><i class="fas fa-robot"></i> AI Assistant</a></li>
+                <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+            </ul>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-ghost text-xl gap-2">
+            <i class="fas fa-vote-yea text-primary"></i> VoteWise
+        </a>
+    </div>
+
+    <!-- Navbar Center (Links - Desktop) -->
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+            <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+            <!-- Dummy placeholders for undefined URLs -->
+            <li><a href="#"><i class="fas fa-chart-bar"></i> Results</a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> Timeline</a></li>
+            <li><a href="#"><i class="fas fa-users"></i> Candidates</a></li>
+        </ul>
+    </div>
+
+    <!-- Navbar End (Auth Actions) -->
+    <div class="navbar-end gap-2">
+        {% if user.is_authenticated %}
+            <div class="dropdown dropdown-end" x-data="{ open: false }" @click.away="open = false">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar" @click="open = !open">
+                    <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold text-lg">
+                        {{ user.first_name.0|default:"U" }}
+                    </div>
+                </div>
+                <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52" x-show="open" style="display: none;">
+                    <!-- User name header -->
+                    <li class="menu-title px-4 py-2 opacity-100">{{ user.get_full_name|default:user.username }}</li>
+                    <li><a href="#"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li>
+                        <!-- Dummy logout for now -->
+                        <a href="#" class="text-error"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary btn-sm md:btn-md">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        {% endif %}
+    </div>
+</header>
