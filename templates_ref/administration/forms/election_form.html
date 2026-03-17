@@ -1,0 +1,87 @@
+{% extends 'administration/base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/admin_forms.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/forms/election_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="admin-header-2">
+        <h2 class="admin-title" style="border-bottom: none; margin-bottom: 0;">{{ title }}</h2>
+        <p class="admin-subtitle">Configure election details and settings</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <!-- Name Field -->
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}" class="form-label">
+                    <i class="fas fa-heading" style="color: var(--admin-accent); margin-right: 8px;"></i>
+                    {{ form.name.label }} <span class="required">*</span>
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Date Fields Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.start_time.id_for_label }}" class="form-label">
+                        <i class="fas fa-calendar-plus" style="color: var(--admin-accent); margin-right: 8px;"></i>
+                        {{ form.start_time.label }} <span class="required">*</span>
+                    </label>
+                    {{ form.start_time }}
+                    {% if form.start_time.errors %}
+                    <div class="invalid-feedback d-block">{{ form.start_time.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.end_time.id_for_label }}" class="form-label">
+                        <i class="fas fa-calendar-check" style="color: var(--admin-accent); margin-right: 8px;"></i>
+                        {{ form.end_time.label }} <span class="required">*</span>
+                    </label>
+                    {{ form.end_time }}
+                    {% if form.end_time.errors %}
+                    <div class="invalid-feedback d-block">{{ form.end_time.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Active Status -->
+            <div class="form-group2">
+                <div class="form-check">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" class="form-check-label">
+                        {{ form.is_active.label }}
+                    </label>
+                </div>
+                <div class="form-text">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i> Only active elections are visible to voters.
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-save"></i> Save Election
+            </button>
+            <a href="{% url 'administration:elections' %}" class="btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- No additional JS needed -->
+{% endblock %}

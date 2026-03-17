@@ -1,0 +1,332 @@
+{% extends 'administration/base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/admin_forms.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/forms/admin_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-header-content">
+            <div class="form-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="form-header-text">
+                <h2 class="form-title">{{ title }}</h2>
+                <p class="form-subtitle">Configure administrator access and permissions</p>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="admin-form">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>{{ form.non_field_errors }}</div>
+        </div>
+        {% endif %}
+        
+        <!-- Administrator Type Section -->
+        <div class="form-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-user-tag"></i>
+                    Administrator Type
+                </h3>
+                <p class="section-description">Select the type of administrator account</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="{{ form.admin_type.id_for_label }}" class="form-label">
+                        <span class="label-text">Administrator Type</span>
+                        <span class="required">*</span>
+                    </label>
+                    {{ form.admin_type }}
+                    {% if form.admin_type.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.admin_type.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Student Profile Selection -->
+                <div class="form-group full-width" id="student-profile-group">
+                    <label for="{{ form.student_profile.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.student_profile.label }}</span>
+                    </label>
+                    
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="studentSearch" class="search-input" placeholder="Search by name or student ID..." autocomplete="off">
+                    </div>
+                    
+                    {{ form.student_profile }}
+                    {% if form.student_profile.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.student_profile.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-help">{{ form.student_profile.help_text }}</small>
+                </div>
+
+                <!-- Employee ID -->
+                <div class="form-group full-width" id="employee-id-group">
+                    <label for="{{ form.employee_id.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.employee_id.label }}</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-id-badge input-icon"></i>
+                        {{ form.employee_id }}
+                    </div>
+                    {% if form.employee_id.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.employee_id.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Account Information Section -->
+        <div class="form-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-user-circle"></i>
+                    Account Information
+                </h3>
+                <p class="section-description">User credentials and personal details</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.username.label }}</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        {{ form.username }}
+                    </div>
+                    {% if form.username.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.username.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.email.label }}</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        {{ form.email }}
+                    </div>
+                    {% if form.email.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.email.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.first_name.label }}</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        {{ form.first_name }}
+                    </div>
+                    {% if form.first_name.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.first_name.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.last_name.label }}</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        {{ form.last_name }}
+                    </div>
+                    {% if form.last_name.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.last_name.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Section -->
+        <div class="form-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-lock"></i>
+                    Security
+                </h3>
+                <p class="section-description">Set or update account password</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.password.label }}</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        {{ form.password }}
+                    </div>
+                    {% if form.password.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.password.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-help">{{ form.password.help_text }}</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.confirm_password.id_for_label }}" class="form-label">
+                        <span class="label-text">{{ form.confirm_password.label }}</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        {{ form.confirm_password }}
+                    </div>
+                    {% if form.confirm_password.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ form.confirm_password.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                <span>{% if form.instance.pk %}Update Administrator{% else %}Add Administrator{% endif %}</span>
+            </button>
+            <a href="{% url 'administration:administrators' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                <span>Cancel</span>
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const adminTypeSelect = document.getElementById('id_admin_type');
+    const studentProfileGroup = document.getElementById('student-profile-group');
+    const employeeIdGroup = document.getElementById('employee-id-group');
+    const studentProfileSelect = document.getElementById('id_student_profile');
+    const searchInput = document.getElementById('studentSearch');
+    
+    const usernameInput = document.getElementById('id_username');
+    const firstNameInput = document.getElementById('id_first_name');
+    const lastNameInput = document.getElementById('id_last_name');
+    const emailInput = document.getElementById('id_email');
+    
+    // Store original student profile options for search
+    const originalOptions = Array.from(studentProfileSelect.options);
+    
+    // Handle admin type change
+    function updateFieldVisibility() {
+        const adminType = adminTypeSelect.value;
+        
+        if (adminType === 'STU') {
+            studentProfileGroup.style.display = 'block';
+            employeeIdGroup.style.display = 'none';
+        } else {
+            studentProfileGroup.style.display = 'none';
+            employeeIdGroup.style.display = 'block';
+        }
+    }
+    
+    // Handle student profile selection
+    function handleStudentSelection() {
+        const selectedStudentId = studentProfileSelect.value;
+        
+        if (selectedStudentId) {
+            fetch(`/administration/api/student-profile/${selectedStudentId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        usernameInput.value = data.student_id;
+                        firstNameInput.value = data.first_name;
+                        lastNameInput.value = data.last_name;
+                        emailInput.value = data.email;
+                        usernameInput.readOnly = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching student data:', error);
+                    const selectedOption = studentProfileSelect.options[studentProfileSelect.selectedIndex];
+                    if (selectedOption && selectedOption.text) {
+                        const match = selectedOption.text.match(/^(.+?)\s*\(/);
+                        if (match) {
+                            const fullName = match[1].trim();
+                            const nameParts = fullName.split(' ');
+                            if (nameParts.length >= 2) {
+                                firstNameInput.value = nameParts[0];
+                                lastNameInput.value = nameParts.slice(1).join(' ');
+                            }
+                        }
+                    }
+                });
+        } else {
+            usernameInput.readOnly = false;
+        }
+    }
+    
+    // Handle student search
+    function handleStudentSearch(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        originalOptions.forEach(option => {
+            if (!option.value) {
+                option.style.display = '';
+                return;
+            }
+            
+            const text = option.text.toLowerCase();
+            option.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    }
+    
+    // Event listeners
+    adminTypeSelect.addEventListener('change', updateFieldVisibility);
+    studentProfileSelect.addEventListener('change', handleStudentSelection);
+    searchInput.addEventListener('input', handleStudentSearch);
+    
+    // Initial state
+    updateFieldVisibility();
+});
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Dynamic form logic handled in inline script above -->
+{% endblock %}

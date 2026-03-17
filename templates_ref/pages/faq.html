@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FAQ - VoteWise{% endblock %}
+
+{% block content %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/info_pages.css' %}">
+{% endblock %}
+
+<div class="info-page-container">
+    <div class="info-content-wrapper">
+        <h1 class="info-page-title">Frequently Asked Questions</h1>
+        <p class="info-page-subtitle">Common questions about the student election process.</p>
+
+        <div class="info-card">
+            <h3 class="info-section-title">When is the election?</h3>
+            <p class="info-text">
+                Election dates are announced via official school channels and listed on the <a href="{% url 'elections:list' %}" class="info-link">Elections</a> page.
+            </p>
+
+            <h3 class="info-section-title">Can I change my vote?</h3>
+            <p class="info-text">
+                No. Once your ballot is submitted, it is final and cannot be changed. Please review your choices carefully before submitting.
+            </p>
+
+            <h3 class="info-section-title">Is my vote anonymous?</h3>
+            <p class="info-text">
+                Yes. The system separates your identity from your ballot choices. We know <em>that</em> you voted, but not <em>who</em> you voted for.
+            </p>
+
+            <h3 class="info-section-title">What if I can't log in?</h3>
+            <p class="info-text">
+                If you are having trouble logging in, please contact the IT support desk or visit the Student Affairs office for assistance.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

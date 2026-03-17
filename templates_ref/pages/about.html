@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - VoteWise{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/about.css' %}">
+<style>
+    body {
+        background: var(--color-slate-900) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-page">
+    <div class="about-container">
+        <!-- Hero Section -->
+        <div class="about-hero">
+            <h1 class="about-title">About VoteWise</h1>
+            <p class="about-subtitle">Modernizing student democracy through secure, accessible, and transparent technology.</p>
+        </div>
+
+        <!-- Mission Card -->
+        <div class="mission-card">
+            <div class="mission-header">
+                <div class="mission-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <h2 class="mission-title">Empowering Student Voices</h2>
+            </div>
+            <p class="mission-text">
+                VoteWise is a next-generation digital voting platform designed specifically for student government elections. Our mission is to increase student participation in the democratic process by making voting easy, transparent, and trustworthy.
+            </p>
+            <p class="mission-text">
+                Built with the latest web technologies, VoteWise ensures that every eligible student can cast their ballot from anywhere, at any time, using any device.
+            </p>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card secure">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Secure & Private</h3>
+                <p class="feature-description">End-to-end encryption and rigorous identity verification protect the integrity of every vote and voter privacy.</p>
+            </div>
+            <div class="feature-card transparent">
+                <div class="feature-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3 class="feature-title">Transparent Process</h3>
+                <p class="feature-description">Real-time results dashboard and verifiable audit trails ensure complete trust in the election outcome.</p>
+            </div>
+            <div class="feature-card accessible">
+                <div class="feature-icon">
+                    <i class="fas fa-universal-access"></i>
+                </div>
+                <h3 class="feature-title">Fully Accessible</h3>
+                <p class="feature-description">Designed for all students, with full support for screen readers, mobile devices, and assistive technologies.</p>
+            </div>
+        </div>
+
+        <!-- Developer Section -->
+        <div class="developer-section">
+            <h3 class="section-title">Meet the Developer</h3>
+            <div class="developer-content">
+                <div class="developer-info">
+                    <h4 class="developer-name">Sean Lloyd Harold Raquel</h4>
+                    <p class="developer-role">Lead Developer & Architect</p>
+                    <p class="developer-bio">
+                        Passionate about building secure and user-friendly web applications. Dedicated to modernizing student democracy through innovative technology solutions.
+                    </p>
+                </div>
+                <div class="contact-info">
+                    <ul class="contact-list">
+                        <li class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <a href="mailto:seanlloydraquel@gmail.com" class="contact-link">seanlloydraquel@gmail.com</a>
+                        </li>
+                        <li class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <a href="#" class="contact-link">github.com/komradkat</a>
+                        </li>
+                        <li class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <a href="#" class="contact-link">komradkat.free.nf</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="footer-note">
+            <p>For general inquiries about the election process, please contact the <a href="mailto:election@school.edu">Student Union Office</a>.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

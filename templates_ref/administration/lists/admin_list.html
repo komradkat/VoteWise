@@ -1,0 +1,148 @@
+{% extends 'administration/base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/admin_lists.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/lists/admin_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="list-container">
+<div class="admin-header-2">
+    <h1 class="admin-title">Administrators</h1>
+    <p class="admin-subtitle">Manage system administrators and permissions</p>
+    <div class="admin-actions">
+        <a href="{% url 'administration:administrator_create' %}" class="btn-primary">
+            <i class="fas fa-plus"></i> Add Administrator
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filter Bar -->
+<div class="filter-bar">
+    <div class="search-container">
+        <form method="get" class="search-form">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" name="search" placeholder="Search administrators..." 
+                   value="{{ search_query }}" class="search-input">
+            <button type="submit" class="btn-primary">Search</button>
+        </form>
+    </div>
+    
+    <div class="filter-controls">
+        <select name="status" class="filter-select" onchange="this.form.submit()">
+            <option value="">All Status</option>
+            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+            <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+        
+        <select name="type" class="filter-select" onchange="this.form.submit()">
+            <option value="">All Types</option>
+            <option value="STU" {% if type_filter == 'STU' %}selected{% endif %}>Student Administrator</option>
+            <option value="EMP" {% if type_filter == 'EMP' %}selected{% endif %}>School Employee</option>
+            <option value="INS" {% if type_filter == 'INS' %}selected{% endif %}>Instructor</option>
+        </select>
+    </div>
+</div>
+
+<!-- Administrators Table -->
+
+<div class="data-table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Employee ID</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for admin in administrators %}
+            <tr>
+                <td>
+                    <div class="cell-flex">
+                        <div class="cell-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <span class="cell-text-primary">{{ admin.user.get_full_name }}</span>
+                    </div>
+                </td>
+                <td>{{ admin.user.username }}</td>
+                <td>{{ admin.user.email }}</td>
+                <td>
+                    <span class="badge badge-{{ admin.admin_type|lower }}">
+                        {{ admin.get_admin_type_display }}
+                    </span>
+                </td>
+                <td>{{ admin.employee_id|default:"-" }}</td>
+                <td>
+                    {% if admin.is_active %}
+                    <span class="badge badge-green">
+                        <i class="fas fa-check-circle"></i> Active
+                    </span>
+                    {% else %}
+                    <span class="badge badge-red">
+                        <i class="fas fa-times-circle"></i> Inactive
+                    </span>
+                    {% endif %}
+                </td>
+                <td>{{ admin.created_at|date:"M d, Y" }}</td>
+                <td class="text-right">
+                    <div class="action-buttons" style="justify-content: flex-end;">
+                        <a href="{% url 'administration:administrator_edit' admin.pk %}" 
+                           class="action-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        {% if admin.user != request.user %}
+                        <a href="{% url 'administration:administrator_toggle_status' admin.pk %}" 
+                           class="action-btn" 
+                           title="{% if admin.is_active %}Disable{% else %}Enable{% endif %}"
+                           style="color: {% if admin.is_active %}var(--admin-red){% else %}var(--admin-green){% endif %};"
+                           onclick="return confirm('Are you sure you want to {% if admin.is_active %}disable{% else %}enable{% endif %} this administrator?');">
+                            <i class="fas fa-{% if admin.is_active %}ban{% else %}check{% endif %}"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr id="emptyState">
+                <td colspan="8" class="empty-state-container">
+                    <div class="empty-state-content">
+                        <div>
+                            <h3 class="empty-state-title">No administrators found</h3>
+                            <p class="empty-state-description">Add administrators to manage the system.</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<!-- Pagination -->
+{% if administrators.has_other_pages %}
+<div class="pagination">
+    {% if administrators.has_previous %}
+    <a href="?page={{ administrators.previous_page_number }}&search={{ search_query }}&status={{ status_filter }}&type={{ type_filter }}" 
+       class="page-link">Previous</a>
+    {% endif %}
+    
+    <span class="page-info">
+        Page {{ administrators.number }} of {{ administrators.paginator.num_pages }}
+    </span>
+    
+    {% if administrators.has_next %}
+    <a href="?page={{ administrators.next_page_number }}&search={{ search_query }}&status={{ status_filter }}&type={{ type_filter }}" 
+       class="page-link">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

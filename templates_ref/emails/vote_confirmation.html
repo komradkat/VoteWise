@@ -1,0 +1,35 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}Vote Confirmation{% endblock %}
+
+{% block content %}
+<div class="greeting">Vote Confirmed! ✅</div>
+
+<p class="text">
+    Dear {{ voter_name }},
+</p>
+
+<p class="text">
+    This email confirms that your vote has been successfully recorded for the election:
+    <span class="highlight">{{ election.name }}</span>.
+</p>
+
+<div class="info-box" style="background-color: #f0fdf4; border-left-color: #16a34a;">
+    <p class="info-text" style="color: #15803d;">
+        <strong>Reference ID:</strong> {{ timestamp|date:"Ymd" }}-{{ voter.id }}<br>
+        <strong>Time:</strong> {{ timestamp|date:"F j, Y, g:i a" }}
+    </p>
+</div>
+
+<p class="text">
+    Your participation is vital to our democracy. You can view your participation history in your dashboard.
+</p>
+
+<div class="btn-container">
+    <a href="{{ site_url|default:'#' }}/accounts/profile" class="btn" style="background-color: #10b981;">Go to Dashboard</a>
+</div>
+
+<p class="text" style="font-size: 14px; color: #9ca3af;">
+    Note: For security reasons, the specific candidates you voted for are not listed in this email to protect your ballot secrecy.
+</p>
+{% endblock %}

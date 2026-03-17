@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard - VoteWise{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'core/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'administration/css/admin_base.css' %}">
+    <link rel="stylesheet" href="{% static 'administration/css/admin.css' %}">
+    <link rel="stylesheet" href="{% static 'administration/css/includes/admin_header.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    {% include 'administration/includes/admin_header.html' %}
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <i class="fas fa-vote-yea"></i> VoteWise Admin
+            </div>
+            <nav class="admin-nav">
+                <a href="{% url 'administration:dashboard' %}"
+                    class="admin-nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{% url 'administration:elections' %}"
+                    class="admin-nav-item {% if 'elections' in request.path %}active{% endif %}">
+                    <i class="fas fa-calendar-alt"></i> Elections
+                </a>
+                <a href="{% url 'administration:timeline_list' %}"
+                    class="admin-nav-item {% if 'timeline' in request.path %}active{% endif %}">
+                    <i class="fa-solid fa-timeline"></i> Timeline
+                </a>
+                <a href="{% url 'administration:positions' %}"
+                    class="admin-nav-item {% if 'positions' in request.path %}active{% endif %}">
+                    <i class="fas fa-chair"></i> Positions
+                </a>
+                <a href="{% url 'administration:partylists' %}"
+                    class="admin-nav-item {% if 'partylists' in request.path %}active{% endif %}">
+                    <i class="fas fa-users"></i> Partylists
+                </a>
+                <a href="{% url 'administration:candidates' %}"
+                    class="admin-nav-item {% if 'candidates' in request.path %}active{% endif %}">
+                    <i class="fas fa-user-tie"></i> Candidates
+                </a>
+                <a href="{% url 'administration:voters' %}"
+                    class="admin-nav-item {% if 'voters' in request.path %}active{% endif %}">
+                    <i class="fas fa-users"></i> Voters
+                </a>
+                <a href="{% url 'reports:hub' %}"
+                    class="admin-nav-item {% if 'reports' in request.path %}active{% endif %}">
+                    <i class="fas fa-file-alt"></i> Reports
+                </a>
+                <a href="{% url 'administration:administrators' %}"
+                    class="admin-nav-item {% if 'administrators' in request.path %}active{% endif %}">
+                    <i class="fas fa-user-shield"></i> Administrators
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            {% if messages %}
+            <div class="messages-container" style="margin-bottom: 1.5rem;">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    margin-bottom: 0.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    {% if message.tags == 'success' %}
+                        background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0;
+                    {% elif message.tags == 'error' %}
+                        background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca;
+                    {% elif message.tags == 'warning' %}
+                        background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a;
+                    {% elif message.tags == 'info' %}
+                        background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;
+                    {% else %}
+                        background-color: #f3f4f6; color: #1f2937; border: 1px solid #e5e7eb;
+                    {% endif %}
+                ">
+                    <span>
+                        {% if message.tags == 'success' %}<i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                        {% elif message.tags == 'error' %}<i class="fas fa-exclamation-circle" style="margin-right: 0.5rem;"></i>
+                        {% elif message.tags == 'warning' %}<i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                        {% elif message.tags == 'info' %}<i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>
+                        {% endif %}
+                        {{ message }}
+                    </span>
+                    <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; cursor: pointer; color: inherit; font-size: 1.25rem;">&times;</button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

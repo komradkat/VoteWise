@@ -1,0 +1,340 @@
+{% extends 'administration/base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/admin_lists.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/lists/voter_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="list-container">
+<div class="admin-header-2">
+    <h1 class="admin-title">Voters Management</h1>
+    <p class="admin-subtitle">Verify and manage student voter registrations</p>
+    <div class="admin-actions">
+        <a href="{% url 'administration:voter_export' %}" class="btn-primary" style="background-color: var(--admin-slate-600);">
+            <i class="fas fa-file-csv"></i> Export CSV
+        </a>
+        <a href="{% url 'administration:voter_create' %}" class="btn-primary">
+            <i class="fas fa-plus"></i> Register Voter
+        </a>
+    </div>
+</div>
+
+<!-- Pending Verification Alert -->
+{% if pending_count > 0 %}
+<div class="pending-alert">
+    <div class="pending-alert-content">
+        <i class="fas fa-exclamation-triangle pending-alert-icon"></i>
+        <div>
+            <strong class="pending-alert-title">{{ pending_count }} voter(s) pending verification</strong>
+            <p class="pending-alert-text">Review and verify new registrations to allow them to vote.</p>
+        </div>
+        <a href="?status=PENDING" class="btn-primary pending-alert-button">
+            <i class="fas fa-eye"></i> View Pending
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Stats Cards -->
+<div class="stats-card">
+    <div class="stats-card-inner">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>Total Registered</h3>
+                <p class="stat-total">{{ page_obj.paginator.count }}</p>
+            </div>
+            <div class="stat-item">
+                <h3>Eligible to Vote</h3>
+                <p class="stat-eligible">{{ eligible_count }}</p>
+            </div>
+            <div class="stat-item">
+                <h3>Pending Verification</h3>
+                <p class="stat-pending">{{ pending_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter Bar -->
+<!-- Search and Filter Bar -->
+<form method="get" class="filter-bar" action="{% url 'administration:voters' %}">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" name="search" id="serverSearchInput" class="search-input" placeholder="Search voters..." value="{{ search_query }}" onkeydown="if(event.key === 'Enter') this.form.submit()">
+    </div>
+    <select name="course" class="server-filter-select" onchange="this.form.submit()">
+        <option value="">All Courses</option>
+        {% for course in courses %}
+        <option value="{{ course }}" {% if course_filter == course %}selected{% endif %}>{{ course }}</option>
+        {% endfor %}
+    </select>
+    <select name="year_level" class="server-filter-select" onchange="this.form.submit()">
+        <option value="">All Years</option>
+        {% for year in year_levels %}
+        <option value="{{ year }}" {% if year_filter == year|stringformat:"i" %}selected{% endif %}>Year {{ year }}</option>
+        {% endfor %}
+    </select>
+    <select name="status" class="server-filter-select" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        <option value="PENDING" {% if current_status_filter == 'PENDING' %}selected{% endif %}>Pending Verification</option>
+        <option value="VERIFIED" {% if current_status_filter == 'VERIFIED' %}selected{% endif %}>Verified</option>
+        <option value="REJECTED" {% if current_status_filter == 'REJECTED' %}selected{% endif %}>Rejected</option>
+    </select>
+</form>
+
+
+    <form method="post" action="{% url 'administration:voter_bulk_verify' %}" id="bulkVerifyForm">
+        {% csrf_token %}
+        <div class="bulk-verify-controls">
+            <label class="select-all-label">
+                <input type="checkbox" id="selectAll" class="select-all-checkbox">
+                <span class="select-all-text">Select All</span>
+            </label>
+            <button type="submit" class="btn-primary bulk-verify-btn" id="bulkVerifyBtn" disabled>
+                <i class="fas fa-check-double"></i> Verify Selected
+            </button>
+        </div>
+    </form>
+    
+    <div class="table-container">
+        <div class="table-scroll">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="col-select">Select</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Course</th>
+                        <th>Year</th>
+                        <th>Verification</th>
+                        <th>Votes Cast</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="votersTable">
+                    {% for voter in voters %}
+                    <tr class="data-row" data-course="{{ voter.course }}" data-year="{{ voter.year_level }}">
+                        <td>
+                            {% if voter.verification_status == 'PENDING' %}
+                            <input type="checkbox" name="voter_ids" value="{{ voter.pk }}" class="voter-checkbox" form="bulkVerifyForm">
+                            {% endif %}
+                        </td>
+                        <td class="col-student-id">{{ voter.student_id }}</td>
+                        <td class="col-name">{{ voter.user.get_full_name }}</td>
+                        <td class="col-email">{{ voter.user.email }}</td>
+                        <td class="col-course">{{ voter.course }}</td>
+                        <td class="col-year">{{ voter.year_level }}</td>
+                        <td>
+                            {% if voter.verification_status == 'PENDING' %}
+                            <span class="badge badge-pending">
+                                <i class="fas fa-clock"></i> Pending
+                            </span>
+                            {% elif voter.verification_status == 'VERIFIED' %}
+                            <span class="badge badge-green">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                            {% else %}
+                            <span class="badge badge-red">
+                                <i class="fas fa-times-circle"></i> Rejected
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="col-votes">
+                            {{ voter.receipts.count }}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                {% if voter.verification_status == 'PENDING' or voter.verification_status == 'REJECTED' %}
+                                <form method="post" action="{% url 'administration:voter_verify' voter.pk %}"
+                                    class="action-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-primary btn-verify" title="{% if voter.verification_status == 'REJECTED' %}Reinstate Eligibility{% else %}Verify{% endif %}">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+
+                                {% if voter.verification_status == 'PENDING' or voter.verification_status == 'VERIFIED' %}
+                                <form method="post" action="{% url 'administration:voter_reject' voter.pk %}"
+                                    class="action-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-primary btn-reject" title="{% if voter.verification_status == 'VERIFIED' %}Revoke Eligibility{% else %}Reject{% endif %}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+
+                                <a href="{% url 'administration:voter_edit' voter.pk %}" class="btn-primary btn-edit"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr id="emptyState">
+                        <td colspan="5" class="empty-state-container">
+                            <div class="empty-state-content">
+                                <div>
+                                    <h3 class="empty-state-title">No elections found</h3>
+                                    <p class="empty-state-description">Create elections for candidates to run for.</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <!-- Hidden empty state for search results -->
+                    <tr id="noResults" style="display: none;">
+                        <td colspan="10" class="no-results-container">
+                            <i class="fas fa-search no-results-icon"></i>
+                            No voters match your search filters.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+<!-- Pagination Controls -->
+<div class="pagination-container" style="margin-top: 1rem; text-align: center;">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="btn-primary" style="margin-right: 0.5rem;">&laquo;
+        Previous</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="btn-primary" style="margin-left: 0.5rem;">Next &raquo;</a>
+    {% endif %}
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'administration/js/admin_lists.js' %}"></script>
+<script>
+    // Bulk verification checkbox handling
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const voterCheckboxes = document.querySelectorAll('.voter-checkbox');
+    const bulkVerifyBtn = document.getElementById('bulkVerifyBtn');
+
+    function updateBulkVerifyButton() {
+        const checkedCount = document.querySelectorAll('.voter-checkbox:checked').length;
+        if (bulkVerifyBtn) {
+            bulkVerifyBtn.disabled = checkedCount === 0;
+        }
+    }
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function () {
+            const checkboxes = document.querySelectorAll('.voter-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateBulkVerifyButton();
+        });
+    }
+
+    // Event delegation for dynamically loaded checkboxes
+    document.getElementById('votersTable').addEventListener('change', function(e) {
+        if (e.target.classList.contains('voter-checkbox')) {
+            const checkboxes = document.querySelectorAll('.voter-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = allChecked;
+            }
+            updateBulkVerifyButton();
+        }
+    });
+
+    // Dynamic Search & Filter Script
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('serverSearchInput');
+        const filterForm = document.querySelector('.filter-bar');
+        const tableBody = document.getElementById('votersTable');
+        const paginationContainers = document.querySelectorAll('.pagination-container');
+        
+        let debounceTimer;
+
+        function performSearch() {
+            const formData = new FormData(filterForm);
+            const searchParams = new URLSearchParams(formData);
+            const url = `${window.location.pathname}?${searchParams.toString()}`;
+
+            // Add loading state opacity
+            tableBody.style.opacity = '0.5';
+
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Update Table
+                const newTableBody = doc.getElementById('votersTable');
+                if (newTableBody) {
+                    tableBody.innerHTML = newTableBody.innerHTML;
+                }
+                
+                // Update Pagination
+                const newPagination = doc.querySelectorAll('.pagination-container');
+                paginationContainers.forEach((container, index) => {
+                    if (newPagination[index]) {
+                        container.innerHTML = newPagination[index].innerHTML;
+                    }
+                });
+                
+                // Update URL
+                window.history.pushState({}, '', url);
+                
+                // Restore opacity
+                tableBody.style.opacity = '1';
+                
+                // Re-initialize bulk verify button state
+                updateBulkVerifyButton();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tableBody.style.opacity = '1';
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(performSearch, 500); // 500ms debounce
+            });
+        }
+        
+        // Handle selects
+        const selects = filterForm.querySelectorAll('select');
+        selects.forEach(select => {
+            // Remove inline submit to prevent double submission
+            select.removeAttribute('onchange'); 
+            select.addEventListener('change', performSearch);
+        });
+    });
+</script>
+{% endblock %}
+
+{% block pagination %}
+<div class="pagination-container" style="margin-top: 1rem; text-align: center;">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="btn-primary" style="margin-right: 0.5rem;">&laquo;
+        Previous</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="btn-primary" style="margin-left: 0.5rem;">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endblock %}

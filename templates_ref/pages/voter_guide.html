@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Voter Guide - VoteWise{% endblock %}
+
+{% block content %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/info_pages.css' %}">
+{% endblock %}
+
+<div class="info-page-container">
+    <div class="info-content-wrapper">
+        <h1 class="info-page-title">Voter Guide</h1>
+        <p class="info-page-subtitle">Everything you need to know about casting your vote.</p>
+
+        <div class="info-card">
+            <h3 class="info-section-title">1. Login & Dashboard</h3>
+            <p class="info-text">
+                Log in using your student credentials. Once logged in, you will be directed to your <strong>Voter Dashboard</strong>, where you can see active elections and your voting status.
+            </p>
+
+            <h3 class="info-section-title">2. Know Your Candidates</h3>
+            <p class="info-text">
+                Before voting, visit the <a href="/candidate-portal/" class="info-link">Candidate Portal</a> to review candidate profiles, platforms, and biographies. Make an informed choice!
+            </p>
+
+            <h3 class="info-section-title">3. Select Your Election</h3>
+            <p class="info-text">
+                On the <a href="{% url 'elections:list' %}" class="info-link">Elections List</a> page, click "Vote Now" on the active election you wish to participate in.
+            </p>
+
+            <h3 class="info-section-title">4. Cast Your Vote</h3>
+            <p class="info-text">
+                Select your preferred candidates for each position. You can review your selections before final submission. Once submitted, your vote is encrypted and cannot be changed.
+            </p>
+
+            <h3 class="info-section-title">5. Confirmation</h3>
+            <p class="info-text">
+                After submitting, you will receive a digital receipt confirming your vote has been recorded. You can view your voting history on your dashboard.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

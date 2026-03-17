@@ -1,0 +1,40 @@
+{% extends 'administration/base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/admin_forms.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/forms/position_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="admin-title">{{ title }}</h2>
+    <p class="admin-subtitle">Define position details and requirements</p>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-field">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+            <div class="errorlist">{{ field.errors.0 }}</div>
+            {% endif %}
+            {% if field.help_text %}
+            <div class="helptext">{{ field.help_text }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-save"></i> Save Position
+        </button>
+        <a href="{% url 'administration:positions' %}" class="btn-primary"
+            style="background:#6b7280;margin-left:0.5rem;">
+            <i class="fas fa-times"></i> Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- No additional JS needed -->
+{% endblock %}

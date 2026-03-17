@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy - VoteWise{% endblock %}
+
+{% block content %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/pages/info_pages.css' %}">
+{% endblock %}
+
+<div class="info-page-container">
+    <div class="info-content-wrapper">
+        <h1 class="info-page-title">Privacy Policy</h1>
+        <p class="info-page-subtitle">Last updated: November 2025</p>
+
+        <div class="info-card">
+            <h3 class="info-section-title">1. Data Collection</h3>
+            <p class="info-text">
+                We collect minimal personal information required to verify your eligibility, including your Student ID, full name, and enrollment status. This data is synchronized securely with the university's registrar database. We do <strong>not</strong> store your account password; authentication is handled via the university's central CAS system.
+            </p>
+
+            <h3 class="info-section-title">2. Use of Information</h3>
+            <p class="info-text">
+                Your information is used strictly for the administration of student elections. This includes verifying eligibility, preventing double voting, and auditing election integrity. We do not sell, share, or use your data for any commercial or marketing purposes.
+            </p>
+
+            <h3 class="info-section-title">3. Data Security</h3>
+            <p class="info-text">
+                VoteWise employs industry-standard security protocols. All data transmission is encrypted via TLS/SSL. Access to the election database is strictly limited to authorized election commissioners and is logged for audit purposes.
+            </p>
+
+            <h3 class="info-section-title">4. Data Retention</h3>
+            <p class="info-text">
+                Election data, including voter logs and ballot records, is retained for 30 days after the certification of election results to allow for any dispute resolution. After this period, all personally identifiable voting records are permanently anonymized or deleted.
+            </p>
+
+            <h3 class="info-section-title">5. User Rights</h3>
+            <p class="info-text">
+                You have the right to verify that your vote was recorded correctly using your unique ballot tracking number. You also have the right to request information about what data is stored about you by contacting the Election Commission.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

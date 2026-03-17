@@ -1,0 +1,472 @@
+{% extends 'administration/base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="list-container">
+<div class="dashboard-wrapper">
+    <!-- Primary Metrics Section -->
+    <div class="metrics-header">
+        <div class="header-content-row">
+            <div class="header-left">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-chart-line"></i>
+                    Election Analytics Dashboard
+                </h1>
+                <p class="admin-subtitle">Real-time overview of election performance and statistics</p>
+            </div>
+            <div class="header-right">
+                {% if all_elections %}
+                <div class="election-selector">
+                    <label for="election-select">
+                        <i class="fas fa-poll"></i> Election:
+                    </label>
+                    <select id="election-select" class="form-select" onchange="window.location.href='?election_id='+this.value">
+                        {% for election in all_elections %}
+                            <option value="{{ election.id }}" {% if election.id == selected_election_id %}selected{% endif %}>
+                                {{ election.name }}{% if election.is_active %} (Active){% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="last-updated">
+            <i class="fas fa-sync-alt"></i>
+            <span id="last-updated">Just now</span>
+        </div>
+    </div>
+
+    <!-- Alerts Section -->
+    {% if alerts %}
+    <div class="alerts-section">
+        {% for alert in alerts %}
+        <div class="alert alert-{{ alert.type }}">
+            <i class="fas fa-{{ alert.icon }}"></i>
+            <span>{{ alert.message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Primary Stats Grid -->
+    <div class="primary-stats-grid">
+        <div class="stat-card stat-primary">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="stat-body">
+                <h3>Total Registered Voters</h3>
+                <div class="stat-value">{{ total_voters|default:0 }}</div>
+                <div class="stat-meta">
+                    <span class="stat-label">Eligible:</span>
+                    <span class="stat-number">{{ eligible_voters|default:0 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-success">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+            </div>
+            <div class="stat-body">
+                <h3>Votes Cast</h3>
+                <div class="stat-value">{{ total_votes_cast|default:0 }}</div>
+                <div class="stat-meta">
+                    <span class="stat-label">Turnout:</span>
+                    <span class="stat-number">{{ overall_turnout_percentage|default:0 }}%</span>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="stat-card stat-warning">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+            <div class="stat-body">
+                <h3>Active Candidates</h3>
+                <div class="stat-value">{{ total_active_candidates|default:0 }}</div>
+                <div class="stat-meta">
+                    <span class="stat-label">Running for office</span>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- New Analytics Cards -->
+        <div class="stat-card stat-purple" style="--card-color-start: #8b5cf6; --card-color-end: #a78bfa;">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+            <div class="stat-body">
+                <h3>Peak Voting Time</h3>
+                <div class="stat-value" style="font-size: 2rem;">{{ peak_voting_hour|default:"N/A" }}</div>
+                <div class="stat-meta">
+                    <span class="stat-label">Volume:</span>
+                    <span class="stat-number">{{ peak_voting_count|default:0 }} votes</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-orange" style="--card-color-start: #f97316; --card-color-end: #fb923c;">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-minus-circle"></i>
+                </div>
+            </div>
+            <div class="stat-body">
+                <h3>Abstention Rate</h3>
+                <div class="stat-value">{{ abstention_rate|default:0 }}%</div>
+                <div class="stat-meta">
+                    <span class="stat-label">Undervotes:</span>
+                    <span class="stat-number">Skipped positions</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Election Section -->
+    {% if election_analytics %}
+    <div class="section-header">
+        <h2>
+            <i class="fas fa-poll"></i>
+            Current Election
+        </h2>
+    </div>
+
+    {% for election in election_analytics %}
+    <div class="election-card">
+        <div class="election-header">
+            <div class="election-info">
+                <h3>{{ election.name }}</h3>
+                <div class="election-meta">
+                    <span class="election-date">
+                        <i class="fas fa-calendar"></i>
+                        {{ election.start_time|date:"M d, Y" }} - {{ election.end_time|date:"M d, Y" }}
+                    </span>
+                </div>
+            </div>
+            <div class="election-status-group">
+                <a href="/reports/" class="btn-report">
+                    <i class="fas fa-file-chart-line"></i>
+                    <span>Reports Hub</span>
+                </a>
+                <span class="badge badge-{{ election.status }}">
+                    {% if election.status == 'active' %}
+                        <i class="fas fa-circle pulse"></i>
+                    {% elif election.status == 'pending' %}
+                        <i class="fas fa-clock"></i>
+                    {% elif election.status == 'paused' %}
+                        <i class="fas fa-pause"></i>
+                    {% else %}
+                        <i class="fas fa-check-circle"></i>
+                    {% endif %}
+                    {{ election.status_label }}
+                </span>
+            </div>
+        </div>
+
+        <div class="election-metrics">
+            <div class="metric-item">
+                <div class="metric-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">Turnout</div>
+                    <div class="metric-value">{{ election.turnout_percentage }}%</div>
+                    <div class="metric-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ election.turnout_percentage }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-item">
+                <div class="metric-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">Votes Cast</div>
+                    <div class="metric-value">{{ election.votes_cast }}</div>
+                    <div class="metric-subtext">of {{ total_voters }} voters</div>
+                </div>
+            </div>
+
+            {% if election.time_remaining %}
+            <div class="metric-item">
+                <div class="metric-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">Time Remaining</div>
+                    <div class="metric-value countdown" data-end-time="{{ election.end_time|date:'c' }}">
+                        {% if election.time_remaining.days > 0 %}
+                            {{ election.time_remaining.days }}d {{ election.time_remaining.hours }}h
+                        {% else %}
+                            {{ election.time_remaining.hours }}h {{ election.time_remaining.minutes }}m
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="metric-item">
+                <div class="metric-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-label">Candidates</div>
+                    <div class="metric-value">{{ election.total_candidates }}</div>
+                    <div class="metric-subtext">running</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Candidates Results -->
+        {% if election.positions_data %}
+        <div class="candidates-section">
+            <h4>
+                <i class="fas fa-trophy"></i>
+                Leading Candidates by Position
+            </h4>
+            
+            {% for position in election.positions_data %}
+            <div class="position-group" style="margin-bottom: 2rem;">
+                <h5 class="position-title" style="font-size: 1.1rem; color: #64748b; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">
+                    {{ position.name }}
+                    <span style="font-size: 0.85rem; color: #94a3b8; margin-left: 0.5rem; font-weight: normal;">
+                        ({{ position.number_of_winners }} winner{% if position.number_of_winners > 1 %}s{% endif %})
+                    </span>
+                    <span style="float: right; font-size: 0.9rem; font-weight: normal;">{{ position.total_votes }} votes</span>
+                </h5>
+                <div class="candidates-grid">
+                    {% for candidate in position.candidates %}
+                    <div class="candidate-card {% if candidate.is_winner %}leading{% endif %}">
+                        <div class="candidate-rank">
+                            {% if candidate.is_winner %}
+                                <i class="fas fa-crown"></i>
+                            {% else %}
+                                #{{ forloop.counter }}
+                            {% endif %}
+                        </div>
+                        <div class="candidate-info">
+                            <div class="candidate-name">{{ candidate.name }}</div>
+                            <!-- Position removed here as it's in the header now -->
+                            <div class="candidate-party">{{ candidate.partylist }}</div>
+                        </div>
+                        <div class="candidate-stats">
+                            <div class="candidate-votes">{{ candidate.votes }}</div>
+                            <div class="candidate-percentage">{{ candidate.percentage }}%</div>
+                            <div class="candidate-progress">
+                                <div class="progress-bar mini">
+                                    <div class="progress-fill" style="width: {{ candidate.percentage }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-candidates">
+            <i class="fas fa-info-circle"></i>
+            <p>No votes cast yet</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-inbox"></i>
+        </div>
+        <h3>No Active Election</h3>
+        <p>There is currently no active election. Create a new election to get started.</p>
+        <a href="{% url 'administration:election_create' %}" class="btn-primary">
+            <i class="fas fa-plus"></i>
+            Create Election
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Analytics Charts Section -->
+    <div class="charts-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-chart-bar"></i>
+                Analytics & Insights
+            </h2>
+        </div>
+
+        <div class="charts-grid">
+            <!-- Turnout Trends Chart -->
+            {% if turnout_hours %}
+            <div class="chart-card chart-wide">
+                <div class="chart-header">
+                    <h3>
+                        <i class="fas fa-chart-line"></i>
+                        Voting Activity (Last 24 Hours)
+                    </h3>
+                    <span class="chart-badge">Real-time</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="turnoutTrendChart"></canvas>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Position Votes Chart -->
+            {% if position_labels %}
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>
+                        <i class="fas fa-chart-bar"></i>
+                        Votes by Position
+                    </h3>
+                </div>
+                <div class="chart-body">
+                    <canvas id="positionVotesChart"></canvas>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Voter Demographics -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>
+                        <i class="fas fa-graduation-cap"></i>
+                        Registered Voters by Course
+                    </h3>
+                    <span class="chart-badge">{{ total_voters }} Total</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="courseChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Year Level Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>
+                        <i class="fas fa-layer-group"></i>
+                        Voters by Year Level
+                    </h3>
+                </div>
+                <div class="chart-body">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Participation by Course -->
+            {% if participation_course_labels %}
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>
+                        <i class="fas fa-user-check"></i>
+                        Participation by Course
+                    </h3>
+                    <span class="chart-badge">Active Voters</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="participationCourseChart"></canvas>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Participation by Year -->
+            {% if participation_year_labels %}
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>
+                        <i class="fas fa-users"></i>
+                        Participation by Year
+                    </h3>
+                </div>
+                <div class="chart-body">
+                    <canvas id="participationYearChart"></canvas>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="section-header" style="margin-top: 3rem;">
+        <h2>
+            <i class="fas fa-history"></i>
+            Recent System Activity
+        </h2>
+    </div>
+
+    <div class="list-container" style="padding: 0; overflow: hidden;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_activity %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar-circle-sm" style="width: 32px; height: 32px; background: var(--admin-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
+                                {{ log.user.username|make_list|first|upper|default:"?" }}
+                            </div>
+                            <span style="font-weight: 500; color: var(--admin-slate-900);">{{ log.user.username|default:"System" }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-gray" style="background: var(--admin-slate-100); color: var(--admin-slate-700);">{{ log.action }}</span>
+                    </td>
+                    <td style="color: var(--admin-slate-600);">{{ log.details|truncatechars:50 }}</td>
+                    <td style="color: var(--admin-slate-500); font-size: 0.9rem;">{{ log.timestamp|timesince }} ago</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4" style="color: var(--admin-slate-500);">No recent activity found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pass data to JavaScript -->
+{{ position_labels|json_script:"position-labels-data" }}
+{{ position_counts|json_script:"position-counts-data" }}
+{{ turnout_hours|json_script:"turnout-hours-data" }}
+{{ turnout_counts|json_script:"turnout-counts-data" }}
+{{ course_labels|json_script:"course-labels-data" }}
+{{ course_counts|json_script:"course-counts-data" }}
+{{ year_labels|json_script:"year-labels-data" }}
+{{ year_counts|json_script:"year-counts-data" }}
+{{ participation_course_labels|json_script:"participation-course-labels-data" }}
+{{ participation_course_counts|json_script:"participation-course-counts-data" }}
+{{ participation_year_labels|json_script:"participation-year-labels-data" }}
+{{ participation_year_counts|json_script:"participation-year-counts-data" }}
+
+<script src="{% static 'administration/js/dashboard_charts.js' %}"></script>
+</div>
+{% endblock %}

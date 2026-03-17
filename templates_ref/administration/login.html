@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - VoteWise</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'administration/css/login.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block extra_css %}
+    {% endblock %}
+</head>
+
+<body>
+    {% include 'administration/includes/admin_header.html' %}
+
+    <section class="admin-login-section">
+        <div class="admin-login-container">
+            <div class="admin-login-card">
+                <!-- Left Side: Branding -->
+                <div class="admin-login-left">
+                    <div class="admin-login-branding">
+                        <div class="admin-shield-icon">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <h1>Administration Panel</h1>
+                        <p>Secure access to VoteWise election management system</p>
+
+                        <div class="admin-features">
+                            <div class="admin-feature-item">
+                                <i class="fas fa-lock"></i>
+                                <span>Secure Authentication</span>
+                            </div>
+                            <div class="admin-feature-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Real-time Analytics</span>
+                            </div>
+                            <div class="admin-feature-item">
+                                <i class="fas fa-users-cog"></i>
+                                <span>Full Management Control</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Login Form -->
+                <div class="admin-login-right">
+                    <div class="admin-form-container">
+                        <div class="admin-form-header">
+                            <h3>Admin Sign In</h3>
+                            <p>Enter your credentials to access the dashboard</p>
+                        </div>
+
+                        {% if messages %}
+                        <div class="messages-container" style="margin-bottom: 1rem;">
+                            {% for message in messages %}
+                            <div class="admin-error-alert" style="{% if message.tags == 'success' %}background-color: #dcfce7; color: #166534; border-color: #bbf7d0;{% endif %}">
+                                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if form.errors %}
+                        <div class="admin-error-alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>
+                                {% if form.non_field_errors %}
+                                {{ form.non_field_errors.0 }}
+                                {% else %}
+                                Invalid credentials. Please try again.
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        <form method="post" class="admin-login-form">
+                            {% csrf_token %}
+                            <div class="admin-form-group">
+                                <label for="id_username">Username</label>
+                                <div class="admin-input-wrapper">
+                                    <i class="fas fa-user admin-input-icon"></i>
+                                    {{ form.username }}
+                                </div>
+                                {% if form.username.errors %}
+                                <span class="admin-field-error">{{ form.username.errors.0 }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label for="id_password">Password</label>
+                                <div class="admin-input-wrapper">
+                                    <i class="fas fa-lock admin-input-icon"></i>
+                                    {{ form.password }}
+                                </div>
+                                {% if form.password.errors %}
+                                <span class="admin-field-error">{{ form.password.errors.0 }}</span>
+                                {% endif %}
+                            </div>
+
+                            <button type="submit" class="admin-login-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Sign In to Dashboard
+                            </button>
+                        </form>
+
+                        <div class="admin-login-footer">
+                            <a href="{% url 'home' %}" class="admin-back-link">
+                                <i class="fas fa-arrow-left"></i> Back to Main Site
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

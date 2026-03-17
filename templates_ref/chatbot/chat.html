@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Chatbot - VoteWise{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'chatbot/css/chat.css' %}">
+<style>
+    body {
+        background: var(--color-slate-900) !important;
+    }
+</style>
+<!-- Add marked.js for markdown parsing -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="chatbot-page">
+    <div class="chatbot-container">
+        <div class="chat-header">
+            <div class="header-content">
+                <h1>
+                    <i class="fas fa-robot header-icon"></i>
+                    AI Election Assistant
+                </h1>
+                <p>Unbiased, factual candidate information</p>
+            </div>
+            
+            {% if active_elections %}
+            <div class="election-selector">
+                <select id="electionSelect" onchange="changeElection(this.value)">
+                    {% for election in active_elections %}
+                    <option value="{{ election.id }}" {% if election == selected_election %}selected{% endif %}>
+                        {{ election.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if not api_configured %}
+        <div class="api-notice">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <strong>Demo Mode Active</strong>
+                <span style="opacity: 0.8; margin-left: 0.5rem;">Configure Gemini API key for full functionality.</span>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="chat-window" id="chatWindow">
+            <!-- Messages will be inserted here dynamically -->
+            
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <form class="chat-input-form" id="chatForm" onsubmit="sendMessage(event)">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="messageInput" 
+                    placeholder="Ask about candidates, platforms, or positions..."
+                    required
+                    autocomplete="off"
+                >
+                <button type="submit" class="chat-send-btn" id="sendBtn">
+                    <span>Send</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{ request.session.chatbot_session_id|json_script:"session-id-data" }}
+{{ selected_election.id|default:None|json_script:"election-id-data" }}
+
+<script>
+    const sessionId = JSON.parse(document.getElementById('session-id-data').textContent);
+    const electionId = JSON.parse(document.getElementById('election-id-data').textContent);
+    const chatWindow = document.getElementById('chatWindow');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+    
+    // Configure marked options
+    marked.setOptions({
+        breaks: true, // Enable line breaks
+        gfm: true     // Enable GitHub Flavored Markdown
+    });
+    
+    function scrollToBottom() {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+    
+    function addMessage(role, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}`;
+        
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        
+        if (role === 'user') {
+            avatar.innerHTML = '<i class="fas fa-user"></i>';
+        } else {
+            avatar.innerHTML = '<i class="fas fa-robot"></i>';
+        }
+        
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'message-content-wrapper';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        // Parse markdown for assistant messages, plain text for user
+        if (role === 'assistant') {
+            messageContent.innerHTML = marked.parse(content);
+        } else {
+            messageContent.textContent = content;
+        }
+        
+        const messageTime = document.createElement('div');
+        messageTime.className = 'message-time';
+        messageTime.textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        
+        contentWrapper.appendChild(messageContent);
+        contentWrapper.appendChild(messageTime);
+        
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(contentWrapper);
+        
+        chatWindow.insertBefore(messageDiv, typingIndicator);
+        scrollToBottom();
+    }
+    
+    async function sendMessage(event) {
+        event.preventDefault();
+        
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        // Add user message to UI
+        addMessage('user', message);
+        messageInput.value = '';
+        
+        // Disable input
+        sendBtn.disabled = true;
+        messageInput.disabled = true;
+        typingIndicator.classList.add('active');
+        scrollToBottom();
+        
+        try {
+            const response = await fetch('{% url "chatbot:chat_api" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    session_id: sessionId,
+                    election_id: electionId
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                addMessage('assistant', data.message);
+            } else {
+                addMessage('assistant', `**Error**: ${data.error}`);
+            }
+        } catch (error) {
+            addMessage('assistant', `**Error**: ${error.message}`);
+        } finally {
+            typingIndicator.classList.remove('active');
+            sendBtn.disabled = false;
+            messageInput.disabled = false;
+            messageInput.focus();
+            scrollToBottom();
+        }
+    }
+    
+    function changeElection(electionId) {
+        window.location.href = `?election_id=${electionId}`;
+    }
+    
+    // Add initial welcome message if chat is empty
+    const messages = chatWindow.querySelectorAll('.message');
+    if (messages.length === 0) {
+        setTimeout(() => {
+            addMessage('assistant', "Hello! I'm your AI Election Assistant. I can help you learn about the candidates and their platforms. What would you like to know?");
+        }, 500);
+    }
+</script>
+{% endblock %}

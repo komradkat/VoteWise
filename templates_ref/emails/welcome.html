@@ -1,0 +1,36 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}Welcome to VoteWise{% endblock %}
+
+{% block content %}
+<div class="greeting">Welcome, {{ username }}! 👋</div>
+
+<p class="text">
+    Thank you for registering with <strong>VoteWise</strong>. We are excited to have you on board!
+</p>
+
+<p class="text">
+    VoteWise is your secure platform for participating in campus elections. 
+    With your account, you can now:
+</p>
+
+<ul class="text" style="color: #4b5563; padding-left: 20px;">
+    <li style="margin-bottom: 10px;">Vote securely in upcoming elections</li>
+    <li style="margin-bottom: 10px;">View real-time election results</li>
+    <li style="margin-bottom: 10px;">Manage your voter profile</li>
+</ul>
+
+<div class="info-box">
+    <p class="info-text">
+        <strong>Next Step:</strong> If you haven't already, please visit a registration booth to complete your biometric verification to enable voting.
+    </p>
+</div>
+
+<div class="btn-container">
+    <a href="{{ site_url|default:'#' }}/auth/login" class="btn">Login to Dashboard</a>
+</div>
+
+<p class="text">
+    If you have any questions, feel free to reply to this email.
+</p>
+{% endblock %}

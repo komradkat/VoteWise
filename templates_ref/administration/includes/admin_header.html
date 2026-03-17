@@ -1,0 +1,70 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'administration/css/includes/admin_header.css' %}">
+{% block extra_css %}
+
+{% endblock %}
+<!-- Administration Header -->
+<header class="admin-header">
+    <!-- Top Bar with Logo and Info -->
+    <div class="admin-top-bar">
+        <div class="admin-header-container">
+            <div class="admin-top-content">
+                <div class="admin-logo-section">
+                    <img src="{% static 'img/logo.png' %}" alt="VoteWise Logo" class="admin-logo-img">
+                    <div class="admin-logo-info">
+                        <span class="admin-logo-text">ACLC College of Tacloban</span>
+                        <a href="https://www.google.com/maps?q=11.238286010439372,125.0042121335158" target="_blank"
+                            rel="noopener noreferrer" class="admin-address" title="View on Google Maps">
+                            <i class="fas fa-map-marker-alt"></i> 352 Real St. Tacloban City 6500, Philippines
+                        </a>
+                        <p class="admin-system-subtitle">VoteWise - Administration Panel</p>
+                    </div>
+                </div>
+                <div class="admin-user-section">
+                    {% if user.is_authenticated %}
+                    <div class="admin-user-dropdown">
+                        <button class="admin-user-info" id="userDropdownBtn">
+                            <i class="fas fa-user-shield"></i>
+                            <span>{{ user.get_full_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </button>
+                        <div class="admin-dropdown-menu" id="userDropdownMenu">
+                            <a href="{% url 'administration:profile' %}" class="admin-dropdown-item">
+                                <i class="fas fa-user-cog"></i>
+                                <span>Profile Settings</span>
+                            </a>
+                            <div class="admin-dropdown-divider"></div>
+                            <a href="{% url 'accounts:logout' %}" class="admin-dropdown-item logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<script>
+// User dropdown toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownBtn = document.getElementById('userDropdownBtn');
+    const dropdownMenu = document.getElementById('userDropdownMenu');
+    
+    if (dropdownBtn && dropdownMenu) {
+        dropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    }
+});
+</script>

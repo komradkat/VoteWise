@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vote - {{ election.name }}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'elections/css/voting.css' %}">
+<style>
+    /* Override global body background for dark theme on voting page */
+    body {
+        background: #0f172a !important;
+        color: #f8fafc !important;
+    }
+    /* Ensure header/footer blend in if they are transparent */
+    main {
+        background: transparent !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="progress-container">
+    <div class="progress-bar"></div>
+</div>
+
+<div class="toast-container"></div>
+
+<div class="voting-container">
+    <div class="voting-header compact">
+        <h1 class="election-title">{{ election.name }}</h1>
+        <div class="election-info">
+            <span><i class="fas fa-hourglass-half"></i> Ends: {{ election.end_time|date:"M j, g:i A" }}</span>
+        </div>
+    </div>
+
+    {% csrf_token %}
+
+    {% for position in positions %}
+    <div class="position-section" data-position-id="{{ position.id }}"
+        data-max-winners="{{ position.number_of_winners }}">
+        <div class="position-header">
+            <h2>{{ position.name }}</h2>
+            {% if position.description %}
+            <p class="position-description">{{ position.description }}</p>
+            {% endif %}
+            <div class="selection-info">
+                <i class="fas fa-info-circle"></i>
+                Select {% if position.number_of_winners > 1 %}up to {{ position.number_of_winners }} candidates{% else %}1 candidate{% endif %}
+            </div>
+        </div>
+
+        <div class="candidates-grid">
+            {% for candidate in position.candidates.all %}
+            <div class="candidate-card" data-candidate-id="{{ candidate.id }}" data-position-id="{{ position.id }}">
+                <div class="selection-checkbox">
+                    <i class="fas fa-check"></i>
+                </div>
+
+                <img src="{{ candidate.get_photo_url }}" alt="{{ candidate.student_profile.user.get_full_name }}"
+                    class="candidate-photo">
+
+                <div class="candidate-info">
+                    <div class="candidate-name">{{ candidate.student_profile.user.get_full_name }}</div>
+                    {% if candidate.partylist %}
+                    <div class="candidate-partylist">{{ candidate.partylist.short_code }}</div>
+                    {% endif %}
+                    {% if candidate.biography %}
+                    <div class="candidate-bio">{{ candidate.biography }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Start Election Modal -->
+    <div class="start-election-modal" id="start-modal">
+        <div class="start-content">
+            <div class="start-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 class="start-title">Secure Voting Mode</h2>
+            <p class="start-description">
+                You are about to enter a secure voting session. 
+                Once started, you will have <strong>10 minutes</strong> to cast your vote.
+                Please ensure you are ready before proceeding.
+            </p>
+            <button class="start-btn" id="start-election-btn">
+                Start Election
+            </button>
+        </div>
+    </div>
+
+    <!-- Voting Timer -->
+    <div class="voting-timer" id="voting-timer">
+        <i class="fas fa-stopwatch"></i>
+        <span id="timer-display">10:00</span>
+    </div>
+
+    <!-- Review Section -->
+    <div class="review-section" id="review-section">
+        <div class="review-card">
+            <div class="review-header">
+                <h2>Review Your Votes</h2>
+                <p>Please check your selections before submitting.</p>
+            </div>
+            
+            <!-- Photo Prompt -->
+            <div class="photo-prompt">
+                <i class="fas fa-camera"></i>
+                <div class="photo-prompt-text">
+                    <h4>Take a Photo!</h4>
+                    <p>Before submitting, we recommend taking a screenshot or photo of your selections for your personal record.</p>
+                </div>
+            </div>
+
+            <div class="review-list">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <div class="submit-section-wizard" style="text-align: center;">
+            <button type="button" class="submit-button" id="final-submit-btn">
+                <i class="fas fa-check-circle"></i>
+                Submit My Vote
+            </button>
+        </div>
+    </div>
+
+    <!-- Wizard Navigation -->
+    <div class="wizard-navigation">
+        <button type="button" class="nav-button" id="prev-btn" disabled>
+            <i class="fas fa-arrow-left"></i> Previous
+        </button>
+        
+        <div class="step-indicator">
+            Step <span id="current-step">1</span> of <span id="total-steps">1</span>
+        </div>
+        
+        <button type="button" class="nav-button primary" id="next-btn">
+            Next <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Original submit section hidden by CSS -->
+    <div class="submit-section">
+        <div class="vote-summary">
+            <h3>Your Selections</h3>
+            <p><span class="selected-count">0</span> candidate(s) selected</p>
+        </div>
+        <button type="button" class="submit-button" disabled>
+            <i class="fas fa-check-circle"></i>
+            Submit My Vote
+        </button>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="confirmation-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <i class="fas fa-vote-yea"></i>
+            <h2>Confirm Your Vote</h2>
+            <p>Please review your selections before submitting</p>
+        </div>
+
+        <div class="modal-selections">
+            <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="modal-button cancel">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button type="button" class="modal-button confirm">
+                <i class="fas fa-check"></i> Confirm Vote
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'elections/js/voting.js' %}"></script>
+{% endblock %}

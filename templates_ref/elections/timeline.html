@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Election Timeline - VoteWise{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'elections/css/timeline.css' %}">
+<style>
+    /* Override global body background for dark theme */
+    body {
+        background: #0f172a !important;
+        color: #f8fafc !important;
+    }
+    /* Ensure header/footer blend in if they are transparent */
+    main {
+        background: transparent !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="timeline-page">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h1 class="page-title">Election Timeline</h1>
+            <p class="page-subtitle">
+                Stay informed about important election dates, events, and deadlines
+            </p>
+        </div>
+
+        {% if elections %}
+            {% for election in elections %}
+            <div class="election-section" data-election-id="{{ election.id }}">
+                <!-- Election Header -->
+                <div class="election-header">
+                    <div class="election-info">
+                        <h2 class="election-name">
+                            <i class="fas fa-vote-yea"></i>
+                            {{ election.name }}
+                        </h2>
+                        <div class="election-dates">
+                            <i class="fas fa-calendar-check"></i>
+                            {{ election.start_time|date:"F j, Y" }} - {{ election.end_time|date:"F j, Y" }}
+                        </div>
+                    </div>
+                    <div class="election-status-badge status-{{ election.status|lower }}">
+                        {% if election.status == "Active" %}
+                            <span class="status-dot"></span>
+                            <span>Active Now</span>
+                        {% elif election.status == "Pending" %}
+                            <i class="fas fa-clock"></i>
+                            <span>Upcoming</span>
+                        {% else %}
+                            <i class="fas fa-check-circle"></i>
+                            <span>{{ election.status }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Timeline Events -->
+                {% if election.timeline_events.all %}
+                <div class="timeline-wrapper">
+                    <div class="timeline-line"></div>
+                    
+                    {% for event in election.timeline_events.all %}
+                    <div class="timeline-event" data-event-order="{{ event.order }}">
+                        <!-- Timeline Marker -->
+                        <div class="timeline-marker">
+                            <div class="marker-icon">
+                                {% if "Filing" in event.title or "Candidacy" in event.title %}
+                                    <i class="fas fa-file-signature"></i>
+                                {% elif "Campaign" in event.title %}
+                                    <i class="fas fa-bullhorn"></i>
+                                {% elif "Voting" in event.title or "Election" in event.title %}
+                                    <i class="fas fa-box-ballot"></i>
+                                {% elif "Result" in event.title %}
+                                    <i class="fas fa-chart-bar"></i>
+                                {% else %}
+                                    <i class="fas fa-calendar-day"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Event Card -->
+                        <div class="event-card">
+                            <div class="event-header">
+                                <h3 class="event-title">{{ event.title }}</h3>
+                                <div class="event-order">#{{ event.order }}</div>
+                            </div>
+                            
+                            <div class="event-datetime">
+                                <div class="datetime-item">
+                                    <i class="fas fa-play-circle"></i>
+                                    <div class="datetime-info">
+                                        <span class="datetime-label">Starts</span>
+                                        <span class="datetime-value">{{ event.start_time|date:"M j, Y - g:i A" }}</span>
+                                    </div>
+                                </div>
+                                <div class="datetime-divider">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="datetime-item">
+                                    <i class="fas fa-stop-circle"></i>
+                                    <div class="datetime-info">
+                                        <span class="datetime-label">Ends</span>
+                                        <span class="datetime-value">{{ event.end_time|date:"M j, Y - g:i A" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if event.description %}
+                            <div class="event-description">
+                                <i class="fas fa-info-circle"></i>
+                                <p>{{ event.description }}</p>
+                            </div>
+                            {% endif %}
+
+                            <!-- Event Status Indicator -->
+                            <div class="event-status">
+                                {% now "U" as current_timestamp %}
+                                {% if event.start_time|date:"U" > current_timestamp %}
+                                    <span class="status-indicator upcoming">
+                                        <i class="fas fa-hourglass-start"></i>
+                                        Upcoming
+                                    </span>
+                                {% elif event.end_time|date:"U" < current_timestamp %}
+                                    <span class="status-indicator completed">
+                                        <i class="fas fa-check-circle"></i>
+                                        Completed
+                                    </span>
+                                {% else %}
+                                    <span class="status-indicator ongoing">
+                                        <i class="fas fa-spinner fa-pulse"></i>
+                                        Ongoing
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-events">
+                    <i class="fas fa-calendar-times"></i>
+                    <p>No timeline events have been scheduled for this election yet.</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-calendar-xmark"></i>
+            </div>
+            <h3>No Elections Scheduled</h3>
+            <p>There are currently no active or upcoming elections. Check back later for updates.</p>
+        </div>
+        {% endif %}
+
+        <!-- Info Footer -->
+        <div class="timeline-footer">
+            <div class="footer-note">
+                <i class="fas fa-lightbulb"></i>
+                <p>
+                    <strong>Important:</strong> Make sure to mark these dates on your calendar. 
+                    Missing deadlines may affect your ability to participate in the election.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate timeline events on scroll
+    const events = document.querySelectorAll('.timeline-event');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    events.forEach(event => {
+        observer.observe(event);
+    });
+});
+</script>
+{% endblock %}

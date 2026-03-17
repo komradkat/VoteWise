@@ -1,0 +1,123 @@
+{% extends 'administration/base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/admin_lists.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/lists/candidate_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="list-container">
+<div class="admin-header-2">
+    <h1 class="admin-title">Candidates</h1>
+    <p class="admin-subtitle">Register and manage election candidates</p>
+    <div class="admin-actions">
+        <a href="{% url 'administration:candidate_create' %}" class="btn-primary">
+            <i class="fas fa-plus"></i> Register Candidate
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filter Bar -->
+<div class="filter-bar">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search candidates...">
+    </div>
+    <select id="filterElection" class="filter-select" data-filter="election">
+        <option value="">All Elections</option>
+        {% for election in elections %}
+        <option value="{{ election.name }}">{{ election.name }}</option>
+        {% endfor %}
+    </select>
+    <select id="filterStatus" class="filter-select" data-filter="status">
+        <option value="">All Statuses</option>
+        <option value="Approved">Approved</option>
+        <option value="Pending">Pending</option>
+    </select>
+</div>
+
+<div class="table-container">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Election</th>
+                    <th>Partylist</th>
+                    <th>Status</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="candidatesTable">
+                {% for candidate in candidates %}
+                <tr class="data-row" data-election="{{ candidate.election.name }}"
+                    data-status="{% if candidate.is_approved %}Approved{% else %}Pending{% endif %}">
+                    <td>
+                        <div class="cell-flex">
+                            <div class="cell-icon" style="padding: 0; overflow: hidden;">
+                                <img src="{{ candidate.get_photo_url }}" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <span class="cell-text-primary">
+                                {{ candidate.student_profile.user.get_full_name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ candidate.position.name }}</td>
+                    <td>{{ candidate.election.name }}</td>
+                    <td>
+                        {% if candidate.partylist %}
+                        <span class="badge badge-blue">
+                            {{ candidate.partylist.short_code }}</span>
+                        {% else %}
+                        <span class="text-italic">Independent</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if candidate.is_approved %}
+                        <span class="badge badge-green">
+                            <i class="fas fa-check-circle"></i> Approved
+                        </span>
+                        {% else %}
+                        <span class="badge badge-yellow">
+                            <i class="fas fa-clock"></i> Pending
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        <a href="{% url 'administration:candidate_edit' candidate.pk %}" class="action-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="emptyState">
+                    <td colspan="5" class="empty-state-container">
+                        <div class="empty-state-content">
+                            <div>
+                                <h3 class="empty-state-title">No candidates found</h3>
+                                <p class="empty-state-description">Create candidates for elections.</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                <!-- Hidden empty state for search results -->
+                <tr id="noResults" style="display: none;">
+                    <td colspan="6" class="no-results-container">
+                        <i class="fas fa-search no-results-icon"></i>
+                        No candidates match your search filters.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'administration/js/admin_lists.js' %}"></script>
+{% endblock %}
