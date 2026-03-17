@@ -63,6 +63,16 @@
 
         <!-- Auth Actions & Mobile Toggle -->
         <div class="flex items-center gap-2">
+            <!-- Theme Toggle -->
+            <button @click="currentTheme = (currentTheme === 'dark' ? 'light' : 'dark'); 
+                            localStorage.setItem('theme', currentTheme); 
+                            document.documentElement.setAttribute('data-theme', currentTheme)" 
+                    class="btn btn-ghost btn-sm btn-circle" 
+                    title="Toggle Theme">
+                <i class="fas fa-sun text-lg transition-all" x-show="currentTheme === 'dark'" style="display: none;"></i>
+                <i class="fas fa-moon text-lg transition-all" x-show="currentTheme === 'light'"></i>
+            </button>
+
             {% if user.is_authenticated %}
                 <div class="relative" @click.away="userDropdownOpen = false">
                     <button @click="userDropdownOpen = !userDropdownOpen" class="btn btn-ghost gap-3 px-2 normal-case">

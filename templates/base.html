@@ -1,7 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
+    <script>
+        // Initialize theme before anything else to prevent flashing
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="theme-color" content="#0f172a">
@@ -23,6 +30,42 @@
     <!-- DaisyUI & Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.1/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            daisyui: {
+                themes: [
+                    {
+                        light: {
+                            ...require("daisyui/src/theming/themes")["light"],
+                            "primary": "#2563eb",
+                            "primary-content": "#ffffff",
+                            "secondary": "#7c3aed",
+                            "accent": "#0ea5e9",
+                            "neutral": "#1e293b",
+                            "base-100": "#f0f2f5",
+                            "base-200": "#e4e6eb",
+                            "base-300": "#ccd0d5",
+                            "--rounded-box": "1rem",
+                            "--rounded-btn": "0.5rem",
+                        },
+                        dark: {
+                            ...require("daisyui/src/theming/themes")["dark"],
+                            "primary": "#3b82f6",
+                            "primary-content": "#ffffff",
+                            "secondary": "#a78bfa",
+                            "accent": "#38bdf8",
+                            "neutral": "#334155",
+                            "base-100": "#0f172a",
+                            "base-200": "#1e293b",
+                            "base-300": "#334155",
+                            "--rounded-box": "1rem",
+                            "--rounded-btn": "0.5rem",
+                        },
+                    },
+                ],
+            },
+        }
+    </script>
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
@@ -30,9 +73,17 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 
+    <style>
+        html {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        * {
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+    </style>
     {% block css %}{% endblock %}
 </head>
-<body class="min-h-screen bg-base-200 text-base-content flex flex-col font-sans" style="font-family: 'Inter', sans-serif;">
+<body class="min-h-screen bg-base-200 text-base-content flex flex-col font-sans" style="font-family: 'Inter', sans-serif;" x-data="{ currentTheme: document.documentElement.getAttribute('data-theme') }">
     {% include 'includes/header.html' %}
 
     <main class="flex-grow">
