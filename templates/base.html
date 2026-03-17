@@ -30,42 +30,8 @@
     <!-- DaisyUI & Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.1/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            daisyui: {
-                themes: [
-                    {
-                        light: {
-                            ...require("daisyui/src/theming/themes")["light"],
-                            "primary": "#2563eb",
-                            "primary-content": "#ffffff",
-                            "secondary": "#7c3aed",
-                            "accent": "#0ea5e9",
-                            "neutral": "#1e293b",
-                            "base-100": "#f0f2f5",
-                            "base-200": "#e4e6eb",
-                            "base-300": "#ccd0d5",
-                            "--rounded-box": "1rem",
-                            "--rounded-btn": "0.5rem",
-                        },
-                        dark: {
-                            ...require("daisyui/src/theming/themes")["dark"],
-                            "primary": "#3b82f6",
-                            "primary-content": "#ffffff",
-                            "secondary": "#a78bfa",
-                            "accent": "#38bdf8",
-                            "neutral": "#334155",
-                            "base-100": "#0f172a",
-                            "base-200": "#1e293b",
-                            "base-300": "#334155",
-                            "--rounded-box": "1rem",
-                            "--rounded-btn": "0.5rem",
-                        },
-                    },
-                ],
-            },
-        }
-    </script>
+    <!-- VoteWise Theme Engine -->
+    <script src="{% static 'js/theme-config.js' %}"></script>
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
